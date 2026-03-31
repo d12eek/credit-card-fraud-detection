@@ -1,93 +1,173 @@
-# 💳 Credit Card Fraud Detection using Anomaly Detection  
-### End-to-End | Banking-Grade | Real-Time Simulation | Interactive Dashboard
+# 💳 Credit Card Fraud Detection System
 
-An industry-inspired, end-to-end fraud detection system built using **unsupervised anomaly detection**, designed to reflect how **real banking and digital payment systems** detect fraudulent transactions under extreme class imbalance.
-
-> ⚠️ This is **not a Kaggle-style classification project**.  
-> The system prioritizes **risk scoring, recall, interpretability, and operational realism**, exactly as used in production fraud pipelines.
+**End-to-End ML | Anomaly Detection | Real-Time Simulation | Production-Ready Pipeline**
 
 ---
 
-## 🏦 Industry Context
+## 🚀 Overview
 
-- **Domain:** Finance / Banking / Digital Payments  
-- **Fraud Rate:** < 1% (extreme imbalance)  
-- **Key Challenge:** Fraud patterns are rare, evolving, and often unlabeled  
-- **Business Priority:**  
-  - Minimize missed fraud (high recall)  
-  - Control false positives (customer experience)  
-  - Enable risk-based decisioning (not binary labels)
+An industry-inspired **fraud detection system** built on real-world transaction data, designed to handle **extreme class imbalance (0.173% fraud rate)** using unsupervised anomaly detection techniques.
 
----
+Unlike typical classification projects, this system focuses on:
 
-## 🎯 Problem Statement
-
-Traditional supervised classifiers struggle in fraud detection due to:
-- Extreme class imbalance
-- Delayed or missing fraud labels
-- Concept drift in fraud patterns
-
-**This project addresses these challenges by:**
-- Learning *normal transaction behavior*
-- Flagging deviations using anomaly detection
-- Converting anomaly scores into **risk-based alerts**
-- Simulating **real-time fraud decisioning**
+* Risk scoring instead of binary prediction
+* High recall for fraud detection
+* Real-world deployment readiness
 
 ---
 
-## 🧠 Approach & Methodology
+## 📊 Dataset
 
-### 🔹 Modeling Strategy
-- **Normal-only training** (fraud labels used only for evaluation)
-- **Unsupervised anomaly detection**
-- **Threshold-based alerting** instead of hard classification
-
-### 🔹 Models Implemented
-- **Isolation Forest** – Primary, scalable global detector  
-- **One-Class SVM** – High-recall safety model  
-- **Local Outlier Factor (LOF)** – Local density-based anomaly detection  
-
-Each model captures **different fraud signals**, mirroring real-world bank deployments.
+* **Total Transactions:** 284,807
+* **Fraud Cases:** 492
+* **Fraud Rate:** 0.173%
+* Highly imbalanced dataset simulating real banking scenarios
 
 ---
 
-## ⚙️ Key Features
+## 🧠 Models Implemented
 
-- Extreme class imbalance handling (fraud < 1%)
-- Robust evaluation beyond accuracy:
-  - Precision, Recall, F1-score
-  - ROC-AUC
-  - Precision–Recall AUC
-- Business-driven threshold tuning
-- **Real-time transaction simulation**
-- Tiered fraud alerts:
-  - **LOW** → Allow
-  - **MEDIUM** → Step-up authentication (OTP)
-  - **HIGH** → Block & review
-- **Interactive Gradio dashboard** (Colab-compatible)
+* **Isolation Forest** → ROC-AUC: **0.9522**
+* **Local Outlier Factor (LOF)** → ROC-AUC: **0.9487**
+* **One-Class SVM** → ROC-AUC: **0.8056**
+
+Each model captures different fraud patterns:
+
+* Global anomalies (Isolation Forest)
+* Local density deviations (LOF)
+* Boundary-based detection (OCSVM)
 
 ---
 
-## 📊 Interactive Fraud Monitoring Dashboard
+## ⚙️ Feature Engineering
 
-The dashboard enables:
-- 🔁 Model selection (Isolation Forest / OCSVM / LOF)
-- 🎚️ Threshold tuning (percentile-based)
-- 📈 Live fraud recall vs alert volume analysis
-- 📋 Alert-level fraud breakdown
-- 📉 Risk score distribution visualization
-- 💡 What-if analysis for business decisions
+Engineered **6 domain-driven features**:
 
-This simulates how **fraud operations teams** monitor and tune live systems.
+* Log-transformed transaction amount
+* Hour-of-day behavioral signal
+* PCA feature magnitude (V-space)
+* Fraud cluster mean/std features
+* Amount-to-feature ratio
+
+Also tuned contamination parameter to match **true fraud rate (0.001728)** for improved precision.
 
 ---
 
-## 🧪 Real-Time Fraud Simulation
+## 🔗 Ensemble Strategy
 
-Transactions are processed **sequentially**, mimicking streaming behavior:
-- Each transaction receives an anomaly score
-- Scores are mapped to risk levels
-- Alerts are logged and analyzed
-- Missed frauds are explicitly identified for review
+Built a **weighted ensemble scoring system**:
 
-This step validates the system’s **operational readiness**, not just offline metrics.
+* Isolation Forest → 50%
+* LOF → 30%
+* One-Class SVM → 20%
+
+Techniques used:
+
+* Sigmoid normalization
+* Threshold optimization
+
+📈 **Performance:**
+
+* Detected **90/148 frauds** in test set
+* **PR-AUC: 0.1975** (strong for extreme imbalance)
+
+---
+
+## 🏗️ System Architecture
+
+Modular production-ready pipeline:
+
+```
+data_loader → preprocessing → feature_engineering → train → evaluate → predict
+```
+
+Key components:
+
+* StandardScaler for normalization
+* Stratified train-test split (70/30)
+* Joblib for model persistence
+* Reproducible pipeline design
+
+---
+
+## 📊 Interactive Dashboard (Streamlit)
+
+Deployed a **real-time fraud monitoring system** with:
+
+* 🔍 Single transaction fraud scoring
+* 📂 Batch CSV upload
+* 📈 Alert distribution visualization
+* 📊 Model comparison (ROC-AUC, PR-AUC, F2-score)
+* ⚡ Real-time inference simulation
+
+---
+
+## 🔄 Project Evolution
+
+### 🔹 Version 1 (Colab Prototype)
+
+* Built in Google Colab
+* Focused on experimentation
+* Implemented anomaly detection models
+* Interactive dashboard using Gradio
+
+### 🔹 Version 2 (Production-Ready System)
+
+* Refactored into modular Python pipeline
+* Advanced feature engineering + ensemble modeling
+* Streamlit deployment
+* Clean dependency and project structure
+
+---
+
+## ⚠️ Real-World Challenges Addressed
+
+* Extreme class imbalance (<1% fraud)
+* Lack of labeled fraud data
+* Concept drift in fraud patterns
+* Trade-off between recall and false positives
+
+---
+
+## ⚙️ Installation & Usage
+
+```bash
+git clone https://github.com/d12eek/credit-card-fraud-detection.git
+cd credit-card-fraud-detection
+
+pip install -r requirements.txt
+python main.py
+```
+
+---
+
+## 🛠️ Tech Stack
+
+* Python
+* Scikit-learn
+* Pandas, NumPy
+* Matplotlib, Seaborn, Plotly
+* Streamlit
+* Joblib
+
+---
+
+## 🎯 Key Takeaways
+
+* Designed system for **real-world fraud detection constraints**
+* Focused on **recall and risk-based decisioning**
+* Built **scalable and modular ML pipeline**
+* Simulated **production fraud monitoring environment**
+
+---
+
+## 📌 Future Improvements
+
+* Deploy as REST API (FastAPI)
+* Add real-time streaming (Kafka / Spark)
+* Online learning for concept drift
+* Model explainability (SHAP / LIME)
+
+---
+
+
